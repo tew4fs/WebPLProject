@@ -1,0 +1,29 @@
+* {
+    box-sizing: border-box;
+}
+
+body{
+    background-image: url(./lawn.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: #D3D3D3;
+    overflow-x: hidden;
+}
+
+.login-container{
+    border: solid 1px black;
+    border-radius: 5%;
+    background-color: #fafafaaf;
+}
+
+.login-container > *{
+    padding: 10px;
+    margin: 10px;
+    text-align: center;
+}
+
+.create-account {
+    text-decoration: none;
+}
