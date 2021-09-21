@@ -21,9 +21,13 @@ body{
 .login-container > *{
     padding: 10px;
     margin: 10px;
+}
+
+.create-account,
+.signin{
     text-align: center;
 }
 
-.create-account {
+.create-account a{
     text-decoration: none;
 }
