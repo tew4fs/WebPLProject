@@ -1,0 +1,78 @@
+* {
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #D3D3D3;
+    overflow-x: hidden;
+}
+
+nav{
+    background-color: rgba(248,249,250, 0.9);
+}
+
+#class-cards .card{
+    margin: 2%;
+    border-radius: 5%;
+    min-height: 180px;
+    justify-content: center;
+    vertical-align: middle;
+    border-width: 0.2rem;
+    border-color: black;
+}
+
+#class-cards .card-link{
+    float: bottom;
+}
+
+#class-card1 .card-title{
+    background-color: red;
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+}
+
+#class-card2 .card-title{
+    background-color: rgb(108, 108, 228);
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+}
+
+#class-card3 .card-title{
+    background-color: rgb(211, 104, 211);
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+}
+
+#class-card4 .card-title{
+    background-color: green;
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+}
+
+#class-card5 .card-title{
+    background-color: yellow;
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+}
+
+#class-card6 .card-title{
+    background-color: pink;
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+}
+
+footer {
+    background-color: rgba(248,249,250, 0.9);
+    Color: rgb(117, 117, 117);
+    text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }

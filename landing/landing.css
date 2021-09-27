@@ -1,0 +1,51 @@
+* {
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #D3D3D3;
+    overflow-x: hidden;
+}
+
+nav{
+    background-color: rgba(248,249,250, 0.9);
+}
+.jumbotron{
+    background-image: url(/WebPLProject/landing/uva.jpg);
+    background-size: cover; 
+    background-position: center;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    
+}
+
+#jumbotron-text1  {
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+    font-size: 500%;
+    font-weight: bolder;
+}
+
+#jumbotron-text2  a{
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+    font-size: 300%;
+    font-weight: bolder;
+    color: white;
+}
+
+#jumbotron-text1:hover,#jumbotron-text2 a:hover {
+    color: gold;
+}
+
+footer {
+    background-color: rgba(248,249,250, 0.9);
+    Color: rgb(117, 117, 117);
+    text-align: center;
+  }
