@@ -1,0 +1,53 @@
+body{
+    overflow-x: hidden;
+}
+
+.upcoming-assignments .badge{
+    float: right;
+}
+
+.upcoming-assignments,
+.assignment-group,
+.bookmark-group{
+    border: 1px solid black;
+}
+
+.assignment-icons,
+.bookmark-icons{
+    float: right;
+}
+
+.assignment-icons a,
+.bookmark-icons a{
+    text-decoration: none;
+}
+
+.assignment-icons .check,
+.assignment-icons .edit,
+.bookmark-icons .link,
+.bookmark-icons .trash{
+    color:black;
+    background-color: #f8f9fa;
+    margin: 5px;
+}
+.assignment-icons .check:hover{
+    color: white;
+    background-color: #198754;
+}
+.assignment-icons .edit:hover{
+    color: white;
+    background-color: #5bc0de;
+}
+.bookmark-icons .link:hover{
+    color: white;
+    background-color: #5bc0de;
+}
+.bookmark-icons .trash:hover{
+    color: white;
+    background-color: #dc3545;
+}
+
+.google-calendar{
+    margin-right: auto;
+    font-size: 90%;
+}
