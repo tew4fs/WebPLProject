@@ -10,6 +10,12 @@ body{
 nav{
     background-color: rgba(248,249,250, 0.9);
 }
+
+.jumbotron-container {
+    margin: 0;
+    padding: 0;
+}
+
 .jumbotron{
     background-image: url(./uva.jpg);
     background-size: cover; 
@@ -19,8 +25,6 @@ nav{
     display: flex;
     align-items: center;
     justify-content: center;
-
-    
 }
 
 #jumbotron-text1  {
