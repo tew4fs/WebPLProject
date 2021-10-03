@@ -1,5 +1,6 @@
 body{
     overflow-x: hidden;
+    background-color: #D3D3D3;
 }
 
 .upcoming-assignments .badge{
@@ -51,3 +52,16 @@ body{
     margin-right: auto;
     font-size: 90%;
 }
+
+footer {
+    background-color: #D3D3D3;
+    color: rgb(117, 117, 117);
+    text-align: center;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
+
+  .content{
+      min-height: 85vh;
+  }

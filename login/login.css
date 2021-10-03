@@ -34,3 +34,14 @@ body{
 nav{
     background-color: rgba(248,249,250, 0.9);
 }
+
+section{
+    min-height: 85vh;
+}
+
+footer {
+    text-align: center;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
