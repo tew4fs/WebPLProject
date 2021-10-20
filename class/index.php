@@ -1,3 +1,27 @@
+<?php
+  include("../database_credentials.php");
+
+  mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+  $db = new mysqli($dbhost, $dbusername, $dbpasswd, $dbname);
+
+
+  /*
+  // Check if class is not set in URL
+  if(!isset($_GET["class"])){
+    header("Location: ../home/");
+    exit();
+  }else{
+    // Check if class is not a valid class
+    if(){
+
+    }
+    else{
+      $className = $_GET["class"];
+    }
+  }*/
+  $className = "";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,7 +38,7 @@
     integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
   <link rel="stylesheet" href="./class.css">
 
-  <title>STS 4500</title>
+  <title><?=$className?></title>
 </head>
 
 <body>
