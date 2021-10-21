@@ -1,3 +1,30 @@
+<?php
+
+/** DATABASE SETUP **/
+
+include("../database_credentials.php"); // define variables
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // Extra Error Printing
+$mysqli = new mysqli($dbhost, $dbusername, $dbpasswd, $dbname);
+$user = null;
+// Join session or start one
+session_start();
+// If the user's email is not set in the session, then it's not
+// a valid session (they didn't get here from the login page),
+// so we should send them over to log in first before doing
+// anything else!
+if (!isset($_SESSION["email"]) or !isset($_COOKIE["username"])) {
+    header("Location: ../login/login.php");
+    exit();
+}
+
+
+$user = [
+    "username" => $_SESSION["username"],
+    "email" => $_SESSION["email"]
+];
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,9 +39,9 @@
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-  <link rel="stylesheet" href="./login.css">
+  <link rel="stylesheet" href="./home.css">
 
-  <title>Login</title>
+  <title>Home</title>
 </head>
 
 <body>
@@ -31,7 +58,7 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
               <li class="nav-item mx-2">
-                <a class="nav-link" href="../home/index.html">
+                <a class="nav-link" href="../home/home.php">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house"
                     viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
@@ -65,13 +92,13 @@
                 </a>
               </li>
               <li class="nav-item mx-2">
-                <a class="nav-link" href="../login/index.html">
+                <a class="nav-link" href="../login/logout.php">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-person" viewBox="0 0 16 16">
                     <path
                       d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
                   </svg>
-                  Sign In
+                  Sign Out
                 </a>
               </li>
             </ul>
@@ -81,60 +108,83 @@
     </div>
   </header>
 
-  <section class="container-fluid">
-    <form class="row">
-      <div class="col-lg-5 col-md-7 col-sm-10 mx-auto my-5 login-container rounded-3">
-        <h3 class="col-md-10 mx-auto signin">Sign In</h3>
-        <div class="col-md-10 mx-auto">
-          <label class="form-label" for="inlineFormInputGroupUsername2">Username</label>
-          <div class="input-group mb-2 mr-sm-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text">
-                &nbsp;
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person"
-                  viewBox="0 0 16 16">
-                  <path
-                    d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
-                </svg>
-                &nbsp;
-              </div>
+  <section>
+    <!-- REPLACE WITH A PHP FUNCTION  -->
+    <div class="container" id="class-cards">
+      <div class="row">
+        <div class="col-sm">
+          <div class="card" style="width: 18rem;" id="class-card1">
+            <div class="card-body">
+              <h5 class="card-title"> CS 3240 </h5>
+              <h6 class="card-subtitle mb-2 text-muted">M/W/F: 2:00 PM - 5:00 PM </h6>
+              <p class="card-text"> 2 Upcoming Assignments.</p>
+              <a href="#" class="card-link">Course Webpage</a>
+              <a href="#" class="card-link">Schedule</a>
             </div>
-            <input type="text" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Username">
           </div>
         </div>
-        <div class="col-md-10 mx-auto">
-          <label for="inputPassword4" class="form-label">Password</label>
-          <div class="input-group mb-2 mr-sm-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text">
-                &nbsp;
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock"
-                  viewBox="0 0 16 16">
-                  <path
-                    d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" />
-                </svg>
-                &nbsp;
-              </div>
+        <div class="col-sm">
+          <div class="card" style="width: 18rem;" id="class-card2">
+            <div class="card-body">
+              <h5 class="card-title"> STS 4500 </h5>
+              <h6 class="card-subtitle mb-2 text-muted">Tu/Th: 1:00 PM - 2:15 PM</h6>
+              <p class="card-text"> 3 Upcoming Assignments.<br> 1 Past Due Assignments.</p>
+              <a href="../class/class.php" class="card-link">Course Webpage</a>
+              <a href="#" class="card-link">Schedule</a>
             </div>
-            <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
           </div>
         </div>
-        <div class="col-10 mx-auto signin">
-          <button type="submit" class="btn btn-primary">Sign in</button>
+        <div class="col-sm">
+          <div class="card" style="width: 18rem;" id="class-card3">
+            <div class="card-body">
+              <h5 class="card-title"> CS 4414 </h5>
+              <h6 class="card-subtitle mb-2 text-muted"> M/W/F: 12:00 PM - 12:50 PM</h6>
+              <p class="card-text"> 2 Upcoming Assignments</p>
+              <a href="#" class="card-link">Course Webpage</a>
+              <a href="#" class="card-link">Schedule</a>
+            </div>
+          </div>
         </div>
-        <div class="col-10 mx-auto signin">
-          <hr class="mt-0" />
-          <a href="#"><img src="./btn_google_signin_dark_normal_web.png" alt="Sign in with Google" /></a>
+        <div class="col-sm">
+          <div class="card" style="width: 18rem;" id="class-card4">
+            <div class="card-body">
+              <h5 class="card-title"> APMA 3120 </h5>
+              <h6 class="card-subtitle mb-2 text-muted"> M/W: 5:00 PM - 6:15 PM</h6>
+              <p class="card-text"> 1 Upcoming Assignments</p>
+              <a href="#" class="card-link">Course Webpage</a>
+              <a href="#" class="card-link">Schedule</a>
+            </div>
+          </div>
         </div>
-        <div class="col-10 mx-auto create-account">
-          <a href="#">Create an Account</a>
+        <div class="col-sm">
+          <div class="card" style="width: 18rem;" id="class-card5">
+            <div class="card-body">
+              <h5 class="card-title"> CS 4640 </h5>
+              <h6 class="card-subtitle mb-2 text-muted"> Tu/Th: 9:00 AM - 10:15 AM</h6>
+              <p class="card-text"> 0 Upcoming Assignments</p>
+              <a href="#" class="card-link">Course Webpage</a>
+              <a href="#" class="card-link">Schedule</a>
+            </div>
+          </div>
+
+        </div>
+        <div class="col-sm">
+          <div class="card" style="width: 18rem;" id="class-card6">
+            <div class="card-body">
+              <h5 class="card-title"> PHYS 2415 </h5>
+              <h6 class="card-subtitle mb-2 text-muted"> M/W: 9:00 AM - 10:15 AM</h6>
+              <p class="card-text"> 0 Upcoming Assignments</p>
+              <a href="#" class="card-link">Course Webpage</a>
+              <a href="#" class="card-link">Schedule</a>
+            </div>
+          </div>
         </div>
       </div>
-    </form>
+    </div>
   </section>
 
   <footer id="footer">
-    <small class="container-fluid" style="color: white;">
+    <small class="container-fluid">
       &copy; ak3rej & tew4fs. All Rights Reserved
     </small>
   </footer>

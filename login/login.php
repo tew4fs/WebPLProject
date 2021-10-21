@@ -1,3 +1,88 @@
+
+<?php
+/** DATABASE SETUP **/
+include("../database_credentials.php"); // define variables
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // Extra Error Printing
+$mysqli = new mysqli($dbhost, $dbusername, $dbpasswd, $dbname);
+
+$error_msg = "";
+// Join the session or start a new one
+session_start();
+
+// Check if the user submitted the form (the form in the HTML below
+// submits back to this page, which is okay for now.  We will check for
+// form data and determine whether to re-show this form with a message
+// or to redirect the user to the trivia game.
+
+function validatePassword($userpassword)
+{
+    $regex1 = "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/";
+    if (preg_match($regex1, $userpassword)===1){
+        return true;
+    }
+    else{
+        return false;
+    } 
+}
+
+
+
+if (isset($_POST["email"])) { /// validate the email coming in
+    $stmt = $mysqli->prepare("select * from user where email = ?;");
+    $stmt->bind_param("s", $_POST["email"]);
+    if (!$stmt->execute()) {
+        $error_msg = "Error checking for user";
+    } else { 
+        // result succeeded
+        $res = $stmt->get_result();
+        $data = $res->fetch_all(MYSQLI_ASSOC);     
+        if (!empty($data)) { //(isset($data[0])) {
+            // user was found!          
+            // validate the user's password
+            if (password_verify($_POST["password"], $data[0]["password"])) {
+                // Save user information into the session to use later
+                //cookie
+                setcookie('username', $data[0]["username"], time()+36000, '/');
+                $_SESSION["username"] = $data[0]["username"];
+                $_SESSION["email"] = $data[0]["email"];
+                
+                header("Location: ../home/home.php");
+                exit();
+            } else {
+                // User was found but entered an invalid password
+                $error_msg = "Invalid Password";
+            }
+        } else {
+            // user was not found, create an account
+            // NEVER store passwords into the database, use a secure hash instead:
+            //Validate Password using regex
+
+            if (validatePassword($_POST["password"]) == TRUE){
+              $hash = password_hash($_POST["password"], PASSWORD_DEFAULT);
+              $insert = $mysqli->prepare("insert into user (username, email, password) values (?, ?, ?);");
+              $insert->bind_param("sss", $_POST["username"], $_POST["email"], $hash);
+              if (!$insert->execute()) {
+                  $error_msg = "Error creating new user";
+              }            
+              // Save user information into the session to use later
+              setcookie('username', $data[0]["username"], time()+36000);
+              $_SESSION["username"] = $_POST["username"];
+              $_SESSION["email"] = $_POST["email"];
+              //cookie
+              header("Location: ../home/home.php");
+              exit();
+            }
+            else{
+              $error_msg = "Password must contain Minimum eight characters, at least one letter and one number:";
+            }
+
+        }
+    }
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,9 +97,9 @@
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-  <link rel="stylesheet" href="./home.css">
+  <link rel="stylesheet" href="./login.css">
 
-  <title>Home</title>
+  <title>Login</title>
 </head>
 
 <body>
@@ -31,7 +116,7 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
               <li class="nav-item mx-2">
-                <a class="nav-link" href="../home/index.html">
+                <a class="nav-link" href="../home/home.php">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house"
                     viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
@@ -65,7 +150,7 @@
                 </a>
               </li>
               <li class="nav-item mx-2">
-                <a class="nav-link" href="../login/index.html">
+                <a class="nav-link" href="../login/login.php">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-person" viewBox="0 0 16 16">
                     <path
@@ -81,82 +166,34 @@
     </div>
   </header>
 
-  <section>
-    <div class="container" id="class-cards">
-      <div class="row">
-        <div class="col-sm">
-          <div class="card" style="width: 18rem;" id="class-card1">
-            <div class="card-body">
-              <h5 class="card-title"> CS 3240 </h5>
-              <h6 class="card-subtitle mb-2 text-muted">M/W/F: 2:00 PM - 5:00 PM </h6>
-              <p class="card-text"> 2 Upcoming Assignments.</p>
-              <a href="#" class="card-link">Course Webpage</a>
-              <a href="#" class="card-link">Schedule</a>
-            </div>
-          </div>
+  <section class="container-fluid">
+    <form class="row" action="login.php" method="post">
+      <div class="col-lg-5 col-md-7 col-sm-10 mx-auto my-5 login-container rounded-3">
+        <h3 class="col-md-10 mx-auto signin">Sign In</h3>
+        <!---->
+        <?php
+        if (!empty($error_msg)) {echo "<div class='alert alert-danger'>$error_msg</div>";}?>
+        <div class="col-md-10 mx-auto">
+          <label class="form-label" for="email">Email</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="Email">
         </div>
-        <div class="col-sm">
-          <div class="card" style="width: 18rem;" id="class-card2">
-            <div class="card-body">
-              <h5 class="card-title"> STS 4500 </h5>
-              <h6 class="card-subtitle mb-2 text-muted">Tu/Th: 1:00 PM - 2:15 PM</h6>
-              <p class="card-text"> 3 Upcoming Assignments.<br> 1 Past Due Assignments.</p>
-              <a href="../class/index.html" class="card-link">Course Webpage</a>
-              <a href="#" class="card-link">Schedule</a>
-            </div>
-          </div>
+        <div class="col-md-10 mx-auto">          
+          <label class="form-label" for="username">Username</label>
+          <input type="text" class="form-control" id="username" name="username" placeholder="Username">
         </div>
-        <div class="col-sm">
-          <div class="card" style="width: 18rem;" id="class-card3">
-            <div class="card-body">
-              <h5 class="card-title"> CS 4414 </h5>
-              <h6 class="card-subtitle mb-2 text-muted"> M/W/F: 12:00 PM - 12:50 PM</h6>
-              <p class="card-text"> 2 Upcoming Assignments</p>
-              <a href="#" class="card-link">Course Webpage</a>
-              <a href="#" class="card-link">Schedule</a>
-            </div>
-          </div>
+        <div class="col-md-10 mx-auto">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Password with 8 or more characters, at least one letter and one number">
         </div>
-        <div class="col-sm">
-          <div class="card" style="width: 18rem;" id="class-card4">
-            <div class="card-body">
-              <h5 class="card-title"> APMA 3120 </h5>
-              <h6 class="card-subtitle mb-2 text-muted"> M/W: 5:00 PM - 6:15 PM</h6>
-              <p class="card-text"> 1 Upcoming Assignments</p>
-              <a href="#" class="card-link">Course Webpage</a>
-              <a href="#" class="card-link">Schedule</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card" style="width: 18rem;" id="class-card5">
-            <div class="card-body">
-              <h5 class="card-title"> CS 4640 </h5>
-              <h6 class="card-subtitle mb-2 text-muted"> Tu/Th: 9:00 AM - 10:15 AM</h6>
-              <p class="card-text"> 0 Upcoming Assignments</p>
-              <a href="#" class="card-link">Course Webpage</a>
-              <a href="#" class="card-link">Schedule</a>
-            </div>
-          </div>
-
-        </div>
-        <div class="col-sm">
-          <div class="card" style="width: 18rem;" id="class-card6">
-            <div class="card-body">
-              <h5 class="card-title"> PHYS 2415 </h5>
-              <h6 class="card-subtitle mb-2 text-muted"> M/W: 9:00 AM - 10:15 AM</h6>
-              <p class="card-text"> 0 Upcoming Assignments</p>
-              <a href="#" class="card-link">Course Webpage</a>
-              <a href="#" class="card-link">Schedule</a>
-            </div>
-          </div>
+        <div class="col-10 mx-auto signin">
+          <button type="submit" class="btn btn-primary">Sign in / Create Account</button>
         </div>
       </div>
-    </div>
+    </form>
   </section>
 
   <footer id="footer">
-    <small class="container-fluid">
+    <small class="container-fluid" style="color: white;">
       &copy; ak3rej & tew4fs. All Rights Reserved
     </small>
   </footer>
