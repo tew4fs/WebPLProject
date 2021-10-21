@@ -7,7 +7,7 @@
     $db->query("drop table if exists user;");
     $db->query("create table user (
         id int not null auto_increment,
-        name text not null,
+        email text not null,
         password text not null,
         username text not null,
         primary key (id));");
@@ -16,6 +16,7 @@
     $db->query("create table class (
         id int not null auto_increment,
         name text not null,
+        uid text not null,
         primary key (id));");
 
     $db->query("drop table if exists user_class;");
