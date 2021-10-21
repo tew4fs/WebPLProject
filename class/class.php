@@ -10,15 +10,58 @@
   if(!isset($_GET["class"])){
     header("Location: ../home/");
     exit();
-  }else{
-    // Check if class is not a valid class
-    if(){
+  }
+  // Check if class is not a valid class
+  $class_name = $_GET["class"];
+  $user_id = $_SESSION["user_id"];
 
+  $get_classes_id_stmt = $db->prepare("select class_id from user_class where user_id = ?;");
+  $get_classes_id_stmt->bind_param("i", $user_id);
+  if (!$get_classes_id_stmt->execute()) {
+    die("Error: ");
+  }
+  $classes_id_res = $get_classes_id_stmt->get_result();
+  $classes_id_data = $classes_id_res->fetch_all(MYSQLI_ASSOC);
+
+  $class_list = {...};
+  $class_id = -1;
+  foreach(classes_id_data as c){
+    $get_class_stmt = $db->prepare("select name from class where id = ?;");
+    $get_class_stmt->bind_param("i", $c["class_id"]);
+    if (!$get_class_stmt->execute()) {
+      die("Error: ");
     }
-    else{
-      $className = $_GET["class"];
+    $class_res = $get_class_stmt->get_result();
+    $class_data = $class_res->fetch_all(MYSQLI_ASSOC);
+    array_push($class_list, $class_data[0]["name"]);
+    if($class_data[0]["name"] === $class_name){
+      $class_id = $c["class_id"];
     }
-  }*/
+  }
+
+  if($class_id < 0){
+    header("Location: ../home/");
+    exit();
+  }
+
+  // Get assignments
+  $get_assignments_stmt = $db->prepare("select * from assignment where class_id = ?;");
+  $get_assignments_stmt->bind_param("i", $class_id);
+  if (!$get_assignments_stmt->execute()) {
+    die("Error: ");
+  }
+  $assignments_res = $get_assignments_stmt->get_result();
+  $assignments_data = $assignments_res->fetch_all(MYSQLI_ASSOC);
+
+  // Get bookmarks
+  $get_bookmarks_stmt = $db->prepare("select * from bookmark where class_id = ?;");
+  $get_bookmarks_stmt->bind_param("i", $class_id);
+  if (!$get_bookmarks_stmt->execute()) {
+    die("Error: ");
+  }
+  $bookmarks_res = $get_bookmarks_stmt->get_result();
+  $bookmarks_data = $bookmarks_res->fetch_all(MYSQLI_ASSOC);
+  */
   $className = "";
 ?>
 
