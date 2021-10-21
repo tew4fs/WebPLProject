@@ -1,3 +1,83 @@
+
+<?php
+/** DATABASE SETUP **/
+include("../database_credentials.php"); // define variables
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // Extra Error Printing
+$mysqli = new mysqli($dbhost, $dbusername, $dbpasswd, $dbname);
+
+$error_msg = "";
+// Join the session or start a new one
+session_start();
+
+// Check if the user submitted the form (the form in the HTML below
+// submits back to this page, which is okay for now.  We will check for
+// form data and determine whether to re-show this form with a message
+// or to redirect the user to the trivia game.
+
+function validatePassword($userpassword)
+{
+    $regex1 = "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/";
+    if (preg_match($regex1, $userpassword)===1){
+        return true;
+    }
+    else{
+        return false;
+    } 
+}
+
+
+
+if (isset($_POST["email"])) { /// validate the email coming in
+    $stmt = $mysqli->prepare("select * from user where email = ?;");
+    $stmt->bind_param("s", $_POST["email"]);
+    if (!$stmt->execute()) {
+        $error_msg = "Error checking for user";
+    } else { 
+        // result succeeded
+        $res = $stmt->get_result();
+        $data = $res->fetch_all(MYSQLI_ASSOC);     
+        if (!empty($data)) { //(isset($data[0])) {
+            // user was found!          
+            // validate the user's password
+            if (password_verify($_POST["password"], $data[0]["password"])) {
+                // Save user information into the session to use later
+                $_SESSION["username"] = $data[0]["username"];
+                $_SESSION["email"] = $data[0]["email"];
+                header("Location: ../home/home.php");
+                exit();
+            } else {
+                // User was found but entered an invalid password
+                $error_msg = "Invalid Password";
+            }
+        } else {
+            // user was not found, create an account
+            // NEVER store passwords into the database, use a secure hash instead:
+            //Validate Password using regex
+
+            if (validatePassword($_POST["password"]) == TRUE){
+              $hash = password_hash($_POST["password"], PASSWORD_DEFAULT);
+              $insert = $mysqli->prepare("insert into user (username, email, password) values (?, ?, ?);");
+              $insert->bind_param("sss", $_POST["username"], $_POST["email"], $hash);
+              if (!$insert->execute()) {
+                  $error_msg = "Error creating new user";
+              }            
+              // Save user information into the session to use later
+              $_SESSION["username"] = $_POST["username"];
+              $_SESSION["email"] = $_POST["email"];
+              header("Location: ../home/home.php");
+              exit();
+            }
+            else{
+              $error_msg = "Password must contain Minimum eight characters, at least one letter and one number:";
+            }
+
+        }
+    }
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,7 +111,7 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
               <li class="nav-item mx-2">
-                <a class="nav-link" href="../home/index.html">
+                <a class="nav-link" href="../home/home.php">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house"
                     viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
@@ -65,7 +145,7 @@
                 </a>
               </li>
               <li class="nav-item mx-2">
-                <a class="nav-link" href="../login/index.html">
+                <a class="nav-link" href="../login/login.php">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-person" viewBox="0 0 16 16">
                     <path
@@ -82,52 +162,26 @@
   </header>
 
   <section class="container-fluid">
-    <form class="row">
+    <form class="row" action="login.php" method="post">
       <div class="col-lg-5 col-md-7 col-sm-10 mx-auto my-5 login-container rounded-3">
         <h3 class="col-md-10 mx-auto signin">Sign In</h3>
+        <!---->
+        <?php
+        if (!empty($error_msg)) {echo "<div class='alert alert-danger'>$error_msg</div>";}?>
         <div class="col-md-10 mx-auto">
-          <label class="form-label" for="inlineFormInputGroupUsername2">Username</label>
-          <div class="input-group mb-2 mr-sm-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text">
-                &nbsp;
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person"
-                  viewBox="0 0 16 16">
-                  <path
-                    d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
-                </svg>
-                &nbsp;
-              </div>
-            </div>
-            <input type="text" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Username">
-          </div>
+          <label class="form-label" for="email">Email</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+        </div>
+        <div class="col-md-10 mx-auto">          
+          <label class="form-label" for="username">Username</label>
+          <input type="text" class="form-control" id="username" name="username" placeholder="Username">
         </div>
         <div class="col-md-10 mx-auto">
-          <label for="inputPassword4" class="form-label">Password</label>
-          <div class="input-group mb-2 mr-sm-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text">
-                &nbsp;
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock"
-                  viewBox="0 0 16 16">
-                  <path
-                    d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" />
-                </svg>
-                &nbsp;
-              </div>
-            </div>
-            <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
-          </div>
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Password with 8 or more characters, at least one letter and one number">
         </div>
         <div class="col-10 mx-auto signin">
-          <button type="submit" class="btn btn-primary">Sign in</button>
-        </div>
-        <div class="col-10 mx-auto signin">
-          <hr class="mt-0" />
-          <a href="#"><img src="./btn_google_signin_dark_normal_web.png" alt="Sign in with Google" /></a>
-        </div>
-        <div class="col-10 mx-auto create-account">
-          <a href="#">Create an Account</a>
+          <button type="submit" class="btn btn-primary">Sign in / Create Account</button>
         </div>
       </div>
     </form>

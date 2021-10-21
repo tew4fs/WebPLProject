@@ -3,7 +3,22 @@
 
   mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
   $db = new mysqli($dbhost, $dbusername, $dbpasswd, $dbname);
-
+  $user = null;
+  // Join session or start one
+  session_start();
+  // If the user's email is not set in the session, then it's not
+  // a valid session (they didn't get here from the login page),
+  // so we should send them over to log in first before doing
+  // anything else!
+  if (!isset($_SESSION["email"])) {
+      header("Location: ../login/login.php");
+      exit();
+  }
+  
+  $user = [
+      "username" => $_SESSION["username"],
+      "email" => $_SESSION["email"]
+  ];
 
   /*
   // Check if class is not set in URL
@@ -56,7 +71,7 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
               <li class="nav-item mx-2">
-                <a class="nav-link" href="../home/index.html">
+                <a class="nav-link" href="../home/home.php">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house"
                     viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
@@ -90,7 +105,7 @@
                 </a>
               </li>
               <li class="nav-item mx-2">
-                <a class="nav-link" href="../login/index.html">
+                <a class="nav-link" href="../login/login.php">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-person" viewBox="0 0 16 16">
                     <path
@@ -113,7 +128,7 @@
           <a class="nav-link" href="#">CS 3240</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="../class/index.html">STS 4500</a>
+          <a class="nav-link active" aria-current="page" href="../class/class.php">STS 4500</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">CS 4414</a>

@@ -1,3 +1,29 @@
+<?php
+
+/** DATABASE SETUP **/
+
+include("../database_credentials.php"); // define variables
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // Extra Error Printing
+$mysqli = new mysqli($dbhost, $dbusername, $dbpasswd, $dbname);
+$user = null;
+// Join session or start one
+session_start();
+// If the user's email is not set in the session, then it's not
+// a valid session (they didn't get here from the login page),
+// so we should send them over to log in first before doing
+// anything else!
+if (!isset($_SESSION["email"])) {
+    header("Location: ../login/login.php");
+    exit();
+}
+
+$user = [
+    "username" => $_SESSION["username"],
+    "email" => $_SESSION["email"]
+];
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,7 +57,7 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
               <li class="nav-item mx-2">
-                <a class="nav-link" href="../home/index.html">
+                <a class="nav-link" href="../home/home.php">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house"
                     viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
@@ -65,13 +91,13 @@
                 </a>
               </li>
               <li class="nav-item mx-2">
-                <a class="nav-link" href="../login/index.html">
+                <a class="nav-link" href="../login/logout.php">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-person" viewBox="0 0 16 16">
                     <path
                       d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
                   </svg>
-                  Sign In
+                  Sign Out
                 </a>
               </li>
             </ul>
@@ -101,7 +127,7 @@
               <h5 class="card-title"> STS 4500 </h5>
               <h6 class="card-subtitle mb-2 text-muted">Tu/Th: 1:00 PM - 2:15 PM</h6>
               <p class="card-text"> 3 Upcoming Assignments.<br> 1 Past Due Assignments.</p>
-              <a href="../class/index.html" class="card-link">Course Webpage</a>
+              <a href="../class/class.php" class="card-link">Course Webpage</a>
               <a href="#" class="card-link">Schedule</a>
             </div>
           </div>
