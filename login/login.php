@@ -41,8 +41,11 @@ if (isset($_POST["email"])) { /// validate the email coming in
             // validate the user's password
             if (password_verify($_POST["password"], $data[0]["password"])) {
                 // Save user information into the session to use later
+                //cookie
+                setcookie('username', $data[0]["username"], time()+36000, '/');
                 $_SESSION["username"] = $data[0]["username"];
                 $_SESSION["email"] = $data[0]["email"];
+                
                 header("Location: ../home/home.php");
                 exit();
             } else {
@@ -62,8 +65,10 @@ if (isset($_POST["email"])) { /// validate the email coming in
                   $error_msg = "Error creating new user";
               }            
               // Save user information into the session to use later
+              setcookie('username', $data[0]["username"], time()+36000);
               $_SESSION["username"] = $_POST["username"];
               $_SESSION["email"] = $_POST["email"];
+              //cookie
               header("Location: ../home/home.php");
               exit();
             }

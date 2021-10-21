@@ -10,7 +10,7 @@
   // a valid session (they didn't get here from the login page),
   // so we should send them over to log in first before doing
   // anything else!
-  if (!isset($_SESSION["email"])) {
+  if (!isset($_SESSION["email"]) or !isset($_COOKIE["username"])) {
       header("Location: ../login/login.php");
       exit();
   }
