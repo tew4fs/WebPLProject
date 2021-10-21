@@ -4,7 +4,7 @@
 
 include("../database_credentials.php"); // define variables
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // Extra Error Printing
-$mysqli = new mysqli($dbhost, $dbusername, $dbpasswd, $dbname);
+$db = new mysqli($dbhost, $dbusername, $dbpasswd, $dbname);
 $user = null;
 // Join session or start one
 session_start();
@@ -17,11 +17,71 @@ if (!isset($_SESSION["email"]) or !isset($_COOKIE["username"])) {
     exit();
 }
 
+$error_msg = "";
+
+$get_user_id = $db->prepare("select id from user where email = ?;");
+$get_user_id->bind_param("s", $_SESSION["email"]);
+if (!$get_user_id->execute()) {
+  $error_msg = "Error: User could not be found";
+}
+$user_id_res = $get_user_id->get_result();
+$user_id_data = $user_id_res->fetch_all(MYSQLI_ASSOC);
 
 $user = [
     "username" => $_SESSION["username"],
-    "email" => $_SESSION["email"]
+    "email" => $_SESSION["email"],
+    "id" => $user_id_data[0]["id"]
 ];
+
+// Add class functionality
+if(isset($_POST["className"])){
+  $user_id = $user["id"];
+  $get_classes_id_stmt = $db->prepare("select class_id from user_class where user_id = ?;");
+  $get_classes_id_stmt->bind_param("i", $user_id);
+  if (!$get_classes_id_stmt->execute()) {
+    die("Error: Database failed");
+  }
+  $classes_id_res = $get_classes_id_stmt->get_result();
+  $classes_id_data = $classes_id_res->fetch_all(MYSQLI_ASSOC);
+  $class_list = [];
+  $class_exists = false;
+  foreach($classes_id_data as $c){
+    $get_class_stmt = $db->prepare("select name from class where id = ?;");
+    $get_class_stmt->bind_param("i", $c["class_id"]);
+    if (!$get_class_stmt->execute()) {
+      die("Error: ");
+    }
+    $class_res = $get_class_stmt->get_result();
+    $class_data = $class_res->fetch_all(MYSQLI_ASSOC);
+    if($class_data[0]["name"] === $_POST["className"]){
+      $class_exists =true;
+    }
+  }
+  if($class_exists){
+    $error_msg = "Class already exists!";
+  }else{
+    $add_class_stmt = $db->prepare("insert into class (name, uid) values (?, ?);");
+    $uid = $_SESSION["email"]."-".$_POST["className"];
+    $add_class_stmt->bind_param("ss", $_POST["className"], $uid);
+    if (!$add_class_stmt->execute()) {
+      die("Error: Database failed");
+    }
+
+    $class_id_stmt = $db->prepare("select id from class where uid = ?;");
+    $class_id_stmt->bind_param("s", $uid);
+    if (!$class_id_stmt->execute()) {
+      die("Error: Database failed");
+    }
+    $class_id_res = $class_id_stmt->get_result();
+    $class_data = $class_id_res->fetch_all(MYSQLI_ASSOC);
+    $class_id = $class_data[0]["id"];
+    $add_userclass_stmt = $db->prepare("insert into user_class (user_id, class_id) values (?, ?);");
+    $add_userclass_stmt->bind_param("ii", $user_id, $class_id);
+    if (!$add_userclass_stmt->execute()) {
+      die("Error: Database failed");
+    }
+  }
+}
 ?>
 
 
@@ -109,6 +169,57 @@ $user = [
   </header>
 
   <section>
+    <!-- Add Class Modal -->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="modal fade" id="classModalToggle" aria-hidden="true" aria-labelledby="addClassModalToggleLabel"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addClassModalToggleLabel">Add Class</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="./home.php">
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-md-7">
+                        <div class="mb-3">
+                          <label for="classNameFormLabel" class="form-label">Class Name</label>
+                          <input type="text" name="className" class="form-control" id="classNameFormLabel" placeholder="Class Name"
+                            required>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <div>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary my-3">
+            <a data-bs-toggle="modal" href="#classModalToggle" role="button" aria-label="Add Class" id="addClass">
+              Add Class
+            </a>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3 mx-auto text-center">
+        <?php
+          if (!empty($error_msg)) {
+            echo "<div class='alert alert-danger'>$error_msg</div>";
+          }
+        ?>
+      </div>
+    </div>
     <!-- REPLACE WITH A PHP FUNCTION  -->
     <div class="container" id="class-cards">
       <div class="row">
@@ -129,7 +240,7 @@ $user = [
               <h5 class="card-title"> STS 4500 </h5>
               <h6 class="card-subtitle mb-2 text-muted">Tu/Th: 1:00 PM - 2:15 PM</h6>
               <p class="card-text"> 3 Upcoming Assignments.<br> 1 Past Due Assignments.</p>
-              <a href="../class/class.php" class="card-link">Course Webpage</a>
+              <a href="../class/class.php?class=STS 4500" class="card-link">Course Webpage</a>
               <a href="#" class="card-link">Schedule</a>
             </div>
           </div>
