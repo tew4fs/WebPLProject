@@ -25,47 +25,17 @@ nav{
     float: bottom;
 }
 
-#class-card1 .card-title{
-    background-color: red;
+#class-card .card-title{
+    background-color: lightcoral;
     text-align: center;
     justify-content: center;
     align-self: center;
 }
 
-#class-card2 .card-title{
-    background-color: rgb(108, 108, 228);
-    text-align: center;
-    justify-content: center;
-    align-self: center;
-}
 
-#class-card3 .card-title{
-    background-color: rgb(211, 104, 211);
-    text-align: center;
-    justify-content: center;
-    align-self: center;
-}
 
-#class-card4 .card-title{
-    background-color: green;
-    text-align: center;
-    justify-content: center;
-    align-self: center;
-}
 
-#class-card5 .card-title{
-    background-color: yellow;
-    text-align: center;
-    justify-content: center;
-    align-self: center;
-}
 
-#class-card6 .card-title{
-    background-color: pink;
-    text-align: center;
-    justify-content: center;
-    align-self: center;
-}
 
 footer {
     background-color: rgba(248,249,250, 0.9);

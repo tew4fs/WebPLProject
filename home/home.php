@@ -1,5 +1,23 @@
 <?php
 
+function createCard(array $class_name_arr) { 
+  foreach ($class_name_arr as $cn){?>
+  <div class="col-sm">
+    <div class="card" style="width: 18rem; margin: 1rem; radius: 1rem" id="class-card">
+    <div class="card-body">
+      <h5 class="card-title"> <?= $cn["name"] ?></h5>
+      <h6 class="card-subtitle mb-2 text-muted"> M/W: 0:00 PM - 0:15 PM</h6>
+      <p class="card-text"> X Upcoming Assignments</p>
+      <a href="#" class="card-link">Course Webpage</a>
+      <a href="#" class="card-link">Schedule</a>
+      </div>
+    </div>
+  </div>
+<?php }} ?>
+
+
+<?php
+
 /** DATABASE SETUP **/
 
 include("../database_credentials.php"); // define variables
@@ -32,6 +50,9 @@ $user = [
     "email" => $_SESSION["email"],
     "id" => $user_id_data[0]["id"]
 ];
+
+//  PHP Function to create a card 
+
 
 // Add class functionality
 if(isset($_POST["className"])){
@@ -82,6 +103,16 @@ if(isset($_POST["className"])){
     }
   }
 }
+
+$class_name_stmt = $db->prepare("select c.name from (user u join user_class uc on (u.id = uc.user_id)) join class c on uc.class_id = c.id where u.email = ?;");
+$class_name_stmt->bind_param("s", $_SESSION["email"]);
+if (!$class_name_stmt->execute()) {
+  die("Error: Database failed");
+}
+$class_name_res = $class_name_stmt->get_result();
+$class_name_data = $class_name_res->fetch_all(MYSQLI_ASSOC);
+
+
 ?>
 
 
@@ -170,7 +201,7 @@ if(isset($_POST["className"])){
 
   <section>
     <!-- Add Class Modal -->
-    <div class="container-fluid">
+    <div class="container-fluid" >
       <div class="row">
         <div class="col-12">
           <div class="modal fade" id="classModalToggle" aria-hidden="true" aria-labelledby="addClassModalToggleLabel"
@@ -221,76 +252,11 @@ if(isset($_POST["className"])){
       </div>
     </div>
     <!-- REPLACE WITH A PHP FUNCTION  -->
-    <div class="container" id="class-cards">
-      <div class="row">
-        <div class="col-sm">
-          <div class="card" style="width: 18rem;" id="class-card1">
-            <div class="card-body">
-              <h5 class="card-title"> CS 3240 </h5>
-              <h6 class="card-subtitle mb-2 text-muted">M/W/F: 2:00 PM - 5:00 PM </h6>
-              <p class="card-text"> 2 Upcoming Assignments.</p>
-              <a href="#" class="card-link">Course Webpage</a>
-              <a href="#" class="card-link">Schedule</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card" style="width: 18rem;" id="class-card2">
-            <div class="card-body">
-              <h5 class="card-title"> STS 4500 </h5>
-              <h6 class="card-subtitle mb-2 text-muted">Tu/Th: 1:00 PM - 2:15 PM</h6>
-              <p class="card-text"> 3 Upcoming Assignments.<br> 1 Past Due Assignments.</p>
-              <a href="../class/class.php?class=STS 4500" class="card-link">Course Webpage</a>
-              <a href="#" class="card-link">Schedule</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card" style="width: 18rem;" id="class-card3">
-            <div class="card-body">
-              <h5 class="card-title"> CS 4414 </h5>
-              <h6 class="card-subtitle mb-2 text-muted"> M/W/F: 12:00 PM - 12:50 PM</h6>
-              <p class="card-text"> 2 Upcoming Assignments</p>
-              <a href="#" class="card-link">Course Webpage</a>
-              <a href="#" class="card-link">Schedule</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card" style="width: 18rem;" id="class-card4">
-            <div class="card-body">
-              <h5 class="card-title"> APMA 3120 </h5>
-              <h6 class="card-subtitle mb-2 text-muted"> M/W: 5:00 PM - 6:15 PM</h6>
-              <p class="card-text"> 1 Upcoming Assignments</p>
-              <a href="#" class="card-link">Course Webpage</a>
-              <a href="#" class="card-link">Schedule</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card" style="width: 18rem;" id="class-card5">
-            <div class="card-body">
-              <h5 class="card-title"> CS 4640 </h5>
-              <h6 class="card-subtitle mb-2 text-muted"> Tu/Th: 9:00 AM - 10:15 AM</h6>
-              <p class="card-text"> 0 Upcoming Assignments</p>
-              <a href="#" class="card-link">Course Webpage</a>
-              <a href="#" class="card-link">Schedule</a>
-            </div>
-          </div>
+    <div class="container">
+      
+    <p><?= createCard($class_name_data)?></p>
 
-        </div>
-        <div class="col-sm">
-          <div class="card" style="width: 18rem;" id="class-card6">
-            <div class="card-body">
-              <h5 class="card-title"> PHYS 2415 </h5>
-              <h6 class="card-subtitle mb-2 text-muted"> M/W: 9:00 AM - 10:15 AM</h6>
-              <p class="card-text"> 0 Upcoming Assignments</p>
-              <a href="#" class="card-link">Course Webpage</a>
-              <a href="#" class="card-link">Schedule</a>
-            </div>
-          </div>
-        </div>
-      </div>
+      
     </div>
   </section>
 
