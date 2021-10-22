@@ -118,16 +118,24 @@
     $assignment_description = $_POST["assignmentDescription"];
     $due_date = $_POST["dueDate"];
     $assignment_class = $_POST["assignmentClass"];
-
-    $add_assignment = $db->prepare("insert into assignment (title, description, class_id, due_date) values (?, ?, ?, ?);");
     foreach($classes as $c){
       if($c["name"] === $assignment_class){
         $assignment_class_id = $c["id"];
       }
     }
-    $add_assignment->bind_param("ssis", $assignment_name, $assignment_description, $assignment_class_id, $due_date);
-    if (!$add_assignment->execute()) {
-      die("Error: Database failed");
+    if(isset($_POST["assignmentID"])){
+      $assignment_ID = $_POST["assignmentID"];
+      $update_assignment = $db->prepare("update assignment set title = ?, description = ?, class_id = ?, due_date = ? where id = ?;");
+      $update_assignment->bind_param("ssisi", $assignment_name, $assignment_description, $assignment_class_id, $due_date, $assignment_ID);
+      if (!$update_assignment->execute()) {
+        die("Error: Database failed");
+      }
+    }else{
+      $add_assignment = $db->prepare("insert into assignment (title, description, class_id, due_date) values (?, ?, ?, ?);");
+      $add_assignment->bind_param("ssis", $assignment_name, $assignment_description, $assignment_class_id, $due_date);
+      if (!$add_assignment->execute()) {
+        die("Error: Database failed");
+      }
     }
   }
 
@@ -159,6 +167,7 @@
   $assignments_data = $assignments_res->fetch_all(MYSQLI_ASSOC);
 
   $assignments_html = "";
+  $assignment_modal_html = "";
   foreach($assignments_data as $a){
     $due_date_status = "bg-success";
     $date = time();
@@ -172,28 +181,88 @@
     $assignments_html .= "
     <li class='list-group-item bg-light'>{$a['title']}
       <div class='assignment-icons'>
-        <span class='badge check'>
-          <svg xmlns='http://www.w3.org/2000/svg' width='23' height='23' fill='currentColor'
-            class='bi bi-check-circle' viewBox='0 0 16 16'>
-            <path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z' />
-            <path
-              d='M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z' />
-          </svg>
-        </span>
-        <span class='badge edit'>
-          <svg xmlns='http://www.w3.org/2000/svg' width='23' height='23' fill='currentColor'
-            class='bi bi-pencil-square' viewBox='0 0 16 16'>
-            <path
-              d='M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z' />
-            <path fill-rule='evenodd'
-              d='M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z' />
-          </svg>
-        </span>
+        <a href='./assignment.php?class=$class_name&assignment={$a['id']}'>
+          <span class='badge check'>
+              <svg xmlns='http://www.w3.org/2000/svg' width='23' height='23' fill='currentColor'
+                class='bi bi-check-circle' viewBox='0 0 16 16'>
+                <path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z' />
+                <path
+                  d='M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z' />
+              </svg>
+          </span>
+        </a>
+        <a data-bs-toggle='modal' href='#editAssignmentModalToggle-{$a["id"]}' role='button' aria-label='Edit Assignment'>
+          <span class='badge edit'>
+            <svg xmlns='http://www.w3.org/2000/svg' width='23' height='23' fill='currentColor'
+              class='bi bi-pencil-square' viewBox='0 0 16 16'>
+              <path
+                d='M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z' />
+              <path fill-rule='evenodd'
+                d='M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z' />
+            </svg>
+          </span>
+        </a>
       </div>
       <div>
         <span class='badge $due_date_status'>{$a['due_date']}</span>
       </div>
     </li>";
+    $assignment_modal_html .= "<div class='modal fade' id='editAssignmentModalToggle-{$a["id"]}' aria-hidden='true'
+          aria-labelledby='editAssignmentModalToggleLabel-{$a["id"]}' tabindex='-1'>
+          <div class='modal-dialog modal-dialog-centered'>
+            <div class='modal-content'>
+              <div class='modal-header'>
+                <h5 class='modal-title' id='editAssignmentModalToggleLabel-{$a["id"]}'>Edit Assignment</h5>
+                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+              </div>
+              <form method='POST' action='./class.php?class=$class_name'>
+                <div class='modal-body'>
+                  <div class='row'>
+                    <div class='col-md-7'>
+                      <div class='mb-3'>
+                        <input type='hidden' name='assignmentID' value={$a["id"]}/>
+                        <label for='assignmentNameFormLabel-{$a["id"]}' class='form-label'>Assignment Name</label>
+                        <input type='text' class='form-control' id='assignmentNameFormLabel-{$a["id"]}' placeholder='Assignment Name'
+                          name='assignmentName' value='{$a["title"]}' required/>
+                      </div>
+                      <div class='mb-3'>
+                        <label for='descriptionFormLabel-{$a["id"]}' class='form-label'>Description</label>
+                        <textarea class='form-control' id='descriptionFormLabel-{$a["id"]}' rows='3'
+                          placeholder='Description' name='assignmentDescription' value='{$a["description"]}'></textarea>
+                      </div>
+                    </div>
+                    <div class='col-md-5'>
+                      <div class='mb-3'>
+                        <label for='classSelect-{$a["id"]}' class='form-label'>Class</label>
+                        <select name='assignmentClass' id='classSelect-{$a["id"]}' class='form-select' required>
+                          <?=$form_options?>
+                        </select>
+                      </div>
+                      <div class='mb-3'>
+                        <label for='dateSelect-{$a["id"]}' class='form-label'>Due Date</label>
+                        <input type='date' name='dueDate' class='form-control' id='dateSelect-{$a["id"]}' value='{$a["due_date"]}'  required>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class='modal-footer'>
+                  <div class='google-calendar'>
+                    <div class='form-check'>
+                      <input class='form-check-input' type='checkbox' value='' id='googleCalendarCheckDefault-{$a["id"]}'>
+                      <label class='form-check-label' for='googleCalendarCheckDefault-{$a["id"]}'>
+                        Add to Google Calendar
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancel</button>
+                    <button type='submit' class='btn btn-primary'>Save</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>";
   }
 
   if($assignments_html === ""){
@@ -273,15 +342,17 @@
             </svg>
           </span>
         </a>
-        <span class='badge trash'>
-          <svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' fill='currentColor' class='bi bi-trash'
-            viewBox='0 0 16 16'>
-            <path
-              d='M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z' />
-            <path fill-rule='evenodd'
-              d='M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z' />
-          </svg>
-        </span>
+        <a href='./bookmark.php?class=$class_name&bookmark={$b['id']}'>
+          <span class='badge trash'>
+            <svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' fill='currentColor' class='bi bi-trash'
+              viewBox='0 0 16 16'>
+              <path
+                d='M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z' />
+              <path fill-rule='evenodd'
+                d='M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z' />
+            </svg>
+          </span>
+        </a>
       </div>
     </li>";
   }
@@ -549,10 +620,11 @@
       &copy; ak3rej & tew4fs. All Rights Reserved
     </small>
   </footer>
+  <?=$assignment_modal_html?>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
     crossorigin="anonymous"></script>
-
+    
 </body>
 
 </html>
