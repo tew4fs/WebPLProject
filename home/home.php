@@ -8,7 +8,7 @@ function createCard(array $class_name_arr) {
       <h5 class="card-title"> <?= $cn["name"] ?></h5>
       <h6 class="card-subtitle mb-2 text-muted"> M/W: 0:00 PM - 0:15 PM</h6>
       <p class="card-text"> X Upcoming Assignments</p>
-      <a href="#" class="card-link">Course Webpage</a>
+      <a href="../class/class.php?class=<?=$cn["name"]?>" class="card-link">Course Webpage</a>
       <a href="#" class="card-link">Schedule</a>
       </div>
     </div>
@@ -252,11 +252,10 @@ $class_name_data = $class_name_res->fetch_all(MYSQLI_ASSOC);
       </div>
     </div>
     <!-- REPLACE WITH A PHP FUNCTION  -->
-    <div class="container">
-      
-    <p><?= createCard($class_name_data)?></p>
-
-      
+    <div class="container" id="class-cards">
+      <div class="row">
+        <?= createCard($class_name_data)?>
+      </div>
     </div>
   </section>
 
