@@ -47,6 +47,13 @@ body{
     color: white;
     background-color: #dc3545;
 }
+.btn-submit {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden; 
+}
 
 .google-calendar{
     margin-right: auto;
