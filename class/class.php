@@ -235,7 +235,7 @@
                       <div class='mb-3'>
                         <label for='classSelect-{$a["id"]}' class='form-label'>Class</label>
                         <select name='assignmentClass' id='classSelect-{$a["id"]}' class='form-select' required>
-                          <?=$form_options?>
+                          $form_options
                         </select>
                       </div>
                       <div class='mb-3'>
