@@ -235,7 +235,7 @@
                       <div class='mb-3'>
                         <label for='classSelect-{$a["id"]}' class='form-label'>Class</label>
                         <select name='assignmentClass' id='classSelect-{$a["id"]}' class='form-select' required>
-                          <?=$form_options?>
+                          $form_options
                         </select>
                       </div>
                       <div class='mb-3'>
@@ -428,7 +428,7 @@
                 </a>
               </li>
               <li class="nav-item mx-2">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="../gpacalc/gpacalc.php">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-calculator" viewBox="0 0 16 16">
                     <path
