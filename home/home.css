@@ -17,25 +17,35 @@ nav{
     min-height: 180px;
     justify-content: center;
     vertical-align: middle;
-    border-width: 0.2rem;
+    border-width: 2px;
     border-color: black;
 }
 
-#class-cards .card-link{
-    float: bottom;
+.card-link{
+    text-decoration: none;
+    color: black;
+}
+
+.card-link:hover{
+    text-decoration: none;
+    color: rgb(75, 75, 75);
+}
+
+#class-cards .card:hover{
+    border-color: rgba(150, 150, 150);
 }
 
 #class-card .card-title{
-    background-color: lightcoral;
+    background-color: rgb(240, 128, 128);
     text-align: center;
     justify-content: center;
     align-self: center;
 }
 
-
-
-
-
+#class-card .card-header{
+    background: #0400ff50;
+    text-align: center;
+}
 
 footer {
     background-color: rgba(248,249,250, 0.9);
@@ -50,4 +60,19 @@ footer {
   #addClass {
       text-decoration: none;
       color: white;
+  }
+
+  .card-settings{
+      position: absolute;
+      right: 10px;
+      top: 5px;
+      width: 20px;
+      height: 20px;
+      border: none;
+      padding: 0px;
+  }
+
+  .class-name{
+      opacity: 100%;
+      color: black;
   }
