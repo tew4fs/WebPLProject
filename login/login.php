@@ -65,7 +65,7 @@ if (isset($_POST["email"])) { /// validate the email coming in
                   $error_msg = "Error creating new user";
               }            
               // Save user information into the session to use later
-              setcookie('username', $data[0]["username"], time()+36000);
+              setcookie('username', $_POST["username"], time()+36000, '/');
               $_SESSION["username"] = $_POST["username"];
               $_SESSION["email"] = $_POST["email"];
               //cookie
