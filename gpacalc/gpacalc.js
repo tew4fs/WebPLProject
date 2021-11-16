@@ -31,7 +31,6 @@ function gpaObject() {
 }
 
 function gpaResultCalc(){
-    console.log("hey");
     var newgpaObj = new gpaObject();
     var gpa = newgpaObj.cumulativeGPA;
     var courses = newgpaObj.courseNum;
