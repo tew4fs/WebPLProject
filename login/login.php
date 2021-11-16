@@ -167,7 +167,7 @@ if (isset($_POST["email"])) { /// validate the email coming in
   </header>
 
   <section class="container-fluid">
-    <form class="row" action="login.php" method="post">
+    <form class="row" action="login.php" method="post" onsubmit="return validate();">
       <div class="col-lg-5 col-md-7 col-sm-10 mx-auto my-5 login-container rounded-3">
         <h3 class="col-md-10 mx-auto signin">Sign In</h3>
         <!---->
@@ -200,6 +200,7 @@ if (isset($_POST["email"])) { /// validate the email coming in
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
     crossorigin="anonymous"></script>
+    <script src="./login.js"></script>
 </body>
 
 </html>
