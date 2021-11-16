@@ -1,29 +1,6 @@
 <?php
-   /* $data =array();
-    if($_SERVER['REQUEST_METHOD'] == "POST"){
-        array_push($data, $_POST['first'],$_POST['second'],$_POST['third'],
-        $_POST['four'],$_POST['five'],$_POST['six'],$_POST['seven'],$_POST['eight']);
-        $data = json_encode(array_values($data));
-        $arr = json_decode($data);
-        $number = 0;
-        $result = 0;
-        foreach ($arr as $v) {
-            if ($v != NULL){
-                $result += $v;
-                $number += 1;
-            }
-        }
-    */
-        /*$res = json_decode($_GET["response"], true);
-        if (isset($res["result"]){
-            $result = $res["result"];
-        }else if isset($res["message"]){
-            $message = $res["message"];
-        }*/
-        
-    //}
-
-    if(isset($_GET["response"])){
+/*
+      if(isset($_GET["response"])){
         $res = json_decode($_GET["response"], true);
         if (isset($res["Result"])){
             $result = $res["Result"];
@@ -32,6 +9,7 @@
             $msg = $res["Message"];
         }
     }
+    */
     
 ?>
 
@@ -48,7 +26,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 </head>
-<body>
+<body onload="ret()">
     <!-- ======= Navigation ======= -->
     <header class="row">
         <div class="col-12">
@@ -119,46 +97,39 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <form action="./gpalogic.php" class="w-50 m-auto" method="post">
-                <?php if(isset($msg)){
-                    echo "<div class='alert alert-danger'>".$msg."</div>";
-                } ?>
-                <?php 
-                        if(isset($result)){?>
-                            <p class="text-center text-success">Your Result is : <strong><?php echo $result; ?></strong></p>
-                    <?php }?>
+                <form class="w-50 m-auto" method="post" onsubmit="gpaResultCalc()">
                     <table class="table border">
                         <tr>
                             <td><label for="">First Semester</label></td>
-                            <td><input class="form-control" type="text" name="first"></td>
+                            <td><input class="form-control" type="text" id="first" name="first"></td>
                         </tr>
                         <tr>
                             <td><label for="">Second Semester</label></td>
-                            <td><input class="form-control" type="text" name="second"></td>
+                            <td><input class="form-control" type="text" id="second" name="second"></td>
                         </tr>
                         <tr>
                             <td><label for="">Third Semester</label></td>
-                            <td><input class="form-control" type="text" name="third"></td>
+                            <td><input class="form-control" type="text" id="third" name="third"></td>
                         </tr>
                         <tr>
                             <td><label for="">Four Semester</label></td>
-                            <td><input class="form-control" type="text" name="four"></td>
+                            <td><input class="form-control" type="text" id="four" name="four"></td>
                         </tr>
                         <tr>
                             <td><label for="">Five Semester</label></td>
-                            <td><input class="form-control" type="text" name="five"></td>
+                            <td><input class="form-control" type="text" id="five" name="five"></td>
                         </tr>
                         <tr>
                             <td><label for="">Six Semester</label></td>
-                            <td><input class="form-control" type="text" name="six"></td>
+                            <td><input class="form-control" type="text" id="six" name="six"></td>
                         </tr>
                         <tr>
                             <td><label for="">Seven Semester</label></td>
-                            <td><input class="form-control" type="text" name="seven"></td>
+                            <td><input class="form-control" type="text" id="seven" name="seven"></td>
                         </tr>
                         <tr>
                             <td><label for="">Eight Semester</label></td>
-                            <td><input class="form-control" type="text" name="eight"></td>
+                            <td><input class="form-control" type="text" id="eight" name="eight"></td>
                         </tr>
                     </table>
                     <input class="btn btn-success" type="submit" name="submit" value="Calculate">
@@ -166,9 +137,15 @@
                 </form>
             </div>
         </div>
+
+        <div class="card">
+            <h2 class="text-center text-success p-4"> Your GPA IS <span id="gparesult"> Unset </h2>
+        </div>
+
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
     crossorigin="anonymous"></script>
+    <script src="./gpacalc.js"></script>
 </html>
