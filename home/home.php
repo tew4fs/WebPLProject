@@ -13,7 +13,7 @@ function createCard(array $class_name_arr) {
           <input type="color" class="card-settings" id="<?=$css_class_name?>-color" value="#0400ff" onchange="selectColor('<?=$css_class_name?>')"/>
         </div>
         <div class="card-body">
-          <h6 class="card-subtitle mb-2 text-muted"> --- </h6>
+          <h6 class="card-subtitle mb-2 text-muted"> </h6>
           <p class="card-text"> Click to check upcoming assignments </p>
         </div>
       </div>
