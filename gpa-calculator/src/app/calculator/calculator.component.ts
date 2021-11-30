@@ -72,7 +72,7 @@ export class CalculatorComponent implements OnInit {
   getClassOptions(email: string): void {
     let json:string = JSON.stringify(email);
     console.log(json);
-    this.http.post<any>("http://localhost/WebPlProject/gpa-calculator/backend.php", email).subscribe(
+    this.http.post<any>("http://localhost/project/gpacalc/backend.php", email).subscribe(
         (respData) =>  { 
             this.classOptions = [];
             this.validClasses = true;

@@ -1,13 +1,12 @@
 <div class="container">
     <div class="card">
         <h2 class="text-center text-success p-4">GPA Calculator</h2>
-    </div>
-    <div class="card">
+        <hr/>
         <div class="card-body">
             <form #emailForm="ngForm" class="w-50 mx-auto">
                 <h4>Load classes</h4>
                 <label for="email">Email</label>
-                <input class="form-control" type="text" id="email" name="email" ngModel/>
+                <input class="form-control" type="text" id="email" name="email" [ngStyle]="{'background-color':validClasses ? '#19875430' : '#0d6efd30'}" placeholder="Email" ngModel/>
                 <button class="btn btn-primary my-2" (click)="getClassOptions(emailForm.value.email)">Load Classes</button>
             </form>
             <hr/>
@@ -147,10 +146,6 @@
                 
             </form>
         </div>
+        <h2 class="text-center p-4" [ngClass]="{'text-success': gpa !== 'N/A', 'text-info': gpa === 'N/A'}"> Your GPA IS <span id="gparesult">{{gpa}}</span> </h2>
     </div>
-
-    <div class="card">
-        <h2 class="text-center text-success p-4"> Your GPA IS <span id="gparesult">{{gpa}}</span> </h2>
-    </div>
-
 </div>
