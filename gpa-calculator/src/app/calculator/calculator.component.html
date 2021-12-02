@@ -1,0 +1,151 @@
+<div class="container">
+    <div class="card">
+        <h2 class="text-center text-success p-4">GPA Calculator</h2>
+        <hr/>
+        <div class="card-body">
+            <form #emailForm="ngForm" class="w-50 mx-auto">
+                <h4>Load classes</h4>
+                <label for="email">Email</label>
+                <input class="form-control" type="text" id="email" name="email" [ngStyle]="{'background-color':validClasses ? '#19875430' : '#0d6efd30'}" placeholder="Email" ngModel/>
+                <button class="btn btn-primary my-2" (click)="getClassOptions(emailForm.value.email)">Load Classes</button>
+            </form>
+            <hr/>
+            <form class="w-50 m-auto" #gpaForm="ngForm" (ngSubmit)="submitForm(gpaForm.value)">
+                <table class="table border">
+                    <thead>
+                        <tr>
+                            <th>Class</th>
+                            <th>Grade</th>
+                            <th>Credits</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div *ngIf="validClasses">
+                                    <select class="form-select" name="classOne" ngModel>
+                                        <option *ngFor="let class of classOptions">{{class}}</option>
+                                    </select>
+                                </div>
+                                <div *ngIf="!validClasses">
+                                    <input #typeclass class="form-control" type="text" id="classOne" name="classOne" ngModel>
+                                </div>
+                            </td>
+                            <td>
+                                <select class="form-select" name="gradeOne" ngModel>
+                                    <option *ngFor="let grade of grades">{{grade}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input class="form-control" name="creditsOne" value="0" type="number" ngModel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div *ngIf="validClasses">
+                                    <select class="form-select" name="classOne" ngModel>
+                                        <option *ngFor="let class of classOptions">{{class}}</option>
+                                    </select>
+                                </div>
+                                <div *ngIf="!validClasses">
+                                    <input #typeclass class="form-control" type="text" id="classOne" name="classOne" ngModel>
+                                </div>
+                            </td>
+                            <td>
+                                <select class="form-select" name="gradeTwo" ngModel>
+                                    <option *ngFor="let grade of grades">{{grade}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input class="form-control" name="creditsTwo" value="0" type="number" ngModel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div *ngIf="validClasses">
+                                    <select class="form-select" name="classOne" ngModel>
+                                        <option *ngFor="let class of classOptions">{{class}}</option>
+                                    </select>
+                                </div>
+                                <div *ngIf="!validClasses">
+                                    <input #typeclass class="form-control" type="text" id="classOne" name="classOne" ngModel>
+                                </div>
+                            </td>
+                            <td>
+                                <select class="form-select" name="gradeThree" ngModel>
+                                    <option *ngFor="let grade of grades">{{grade}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input class="form-control" name="creditsThree" value="0" type="number" ngModel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div *ngIf="validClasses">
+                                    <select class="form-select" name="classOne" ngModel>
+                                        <option *ngFor="let class of classOptions">{{class}}</option>
+                                    </select>
+                                </div>
+                                <div *ngIf="!validClasses">
+                                    <input #typeclass class="form-control" type="text" id="classOne" name="classOne" ngModel>
+                                </div>
+                            </td>
+                            <td>
+                                <select class="form-select" name="gradeFour" ngModel>
+                                    <option *ngFor="let grade of grades">{{grade}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input class="form-control" name="creditsFour" value="0" type="number" ngModel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div *ngIf="validClasses">
+                                    <select class="form-select" name="classOne" ngModel>
+                                        <option *ngFor="let class of classOptions">{{class}}</option>
+                                    </select>
+                                </div>
+                                <div *ngIf="!validClasses">
+                                    <input #typeclass class="form-control" type="text" id="classOne" name="classOne" ngModel>
+                                </div>
+                            </td>
+                            <td>
+                                <select class="form-select" name="gradeFive" ngModel>
+                                    <option *ngFor="let grade of grades">{{grade}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input class="form-control" name="creditsFive" value="0" type="number" ngModel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div *ngIf="validClasses">
+                                    <select class="form-select" name="classOne" ngModel>
+                                        <option *ngFor="let class of classOptions">{{class}}</option>
+                                    </select>
+                                </div>
+                                <div *ngIf="!validClasses">
+                                    <input #typeclass class="form-control" type="text" id="classOne" name="classOne" ngModel>
+                                </div>
+                            </td>
+                            <td>
+                                <select class="form-select" name="gradeSix" ngModel>
+                                    <option *ngFor="let grade of grades">{{grade}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input class="form-control" name="creditsSix" value="0" type="number" ngModel>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-success" type="submit" name="submit">Calculate</button>
+                
+            </form>
+        </div>
+        <h2 class="text-center p-4" [ngClass]="{'text-success': gpa !== 'N/A', 'text-info': gpa === 'N/A'}"> Your GPA IS <span id="gparesult">{{gpa}}</span> </h2>
+    </div>
+</div>
